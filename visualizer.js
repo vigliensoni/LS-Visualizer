@@ -12,8 +12,10 @@ const matLength = NUM_DRUM_CLASSES * LOOP_DURATION * COLS * ROWS
 const LSMatrix = new Float32Array(matLength) 
 
 
-
+// ///////////////////////////////////////
 // SYNTHETIC DATA
+// fill the space with 1's by user-provided row, column, instrument, and time
+// ///////////////////////////////////////
 function createSynthData(r, c, i, t) {
   LSMatrix[(r * COLS * NUM_DRUM_CLASSES * LOOP_DURATION) + (c * NUM_DRUM_CLASSES * LOOP_DURATION) + (i * LOOP_DURATION) + t] = 1 // R 1st
 }
@@ -28,8 +30,10 @@ for (let row = 0; row < ROWS; row++ ){
   }
 }
 
-
+// ///////////////////////////////////////
 // LOADING DATA FROM MODEL
+// Load data from a pre-trained model. To be used instead of synthetic data
+// ///////////////////////////////////////
 let url = 'https://raw.githubusercontent.com/vigliensoni/R-VAE/master/data/trap_all_files.model/model_202062_172427.model-matrix.data'
 
 async function getMatrix(url) {
@@ -39,10 +43,11 @@ async function getMatrix(url) {
     });
   }
 
-
+// ///////////////////////////////////////
+// CONVERT MATRIX DATA FROM MODEL FOR VISUALIZATION
+// ///////////////////////////////////////
 (async () => {
   let LSMatrix = await getMatrix(url);
-  console.log(LSMatrix);
 
   let matrix2 = new Float32Array(ROWS * INST_SIDE * COLS * INST_SIDE * LOOP_DURATION) 
 
@@ -58,7 +63,6 @@ async function getMatrix(url) {
                               ( r * NUM_DRUM_CLASSES * LOOP_DURATION * COLS ) + 
                               t
                       matrix2[counter] = LSMatrix[pos]
-                      // console.log(counter, pos)
                       counter++
                   }
               }
@@ -89,8 +93,7 @@ async function getMatrix(url) {
           
         }
       }
-  
-  }
+    }
   
   // Iterate over all points
   for(let t = 0; t < LOOP_DURATION; t++) {
@@ -103,8 +106,6 @@ async function getMatrix(url) {
     }
   }
   
-  // console.log(matrix3)
-
 
   let time = 0
   // VISUALIZE MATRIX
@@ -117,15 +118,11 @@ async function getMatrix(url) {
     canvas.width = width
     canvas.height = height
   
-  
-  
-    
     let from = width * height * 4 * (t + 0)
     let to = width * height * 4 * (t + 1)
     let idata = ctx.createImageData(width, height)
     idata.data.set(matrix3.slice(from, to))
     ctx.putImageData(idata,0,0)
-  
   
     timetag.innerText = "t:" + t + " f:" + from + " t:" + (to-1)
     time++
@@ -150,20 +147,4 @@ async function getMatrix(url) {
 
 })();
 
-
-
-// getMatrix(url)
-//   .then(vector => console.log('vector: ', vector))
-//   .then(console.log('vector: ', vector))
-  // .then(vector => LSMatrix.set(vector, 0))
-  // .then(LSMatrix => console.log('LSM', LSMatrix))
-
-// console.log(LSMatrix)    
-
-
-
-// ///////////////////////////////////////
-// CREATE MATRIX REPRESENTATION FOR VISUALIZATION
-// Based on a ROWS*COLS*NUM_DRUM_CLASES per each time step.
-// ///////////////////////////////////////
 
