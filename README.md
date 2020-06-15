@@ -1,2 +1,3 @@
 # LS-Visualizer
-Latent space visualizer
+
+[Latent space visualizer](https://vigliensoni.github.io/LS-Visualizer/)
